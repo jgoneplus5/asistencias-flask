@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro de Asistencia</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .mensaje { margin-bottom: 10px; color: blue; }
+        input, select { padding: 5px; margin: 5px 0; width: 100%; max-width: 300px; }
+        button { padding: 10px 20px; margin-top: 10px; }
+        table { border-collapse: collapse; margin-top: 20px; width: 100%; max-width: 700px; }
+        th, td { border: 1px solid #ccc; padding: 5px; text-align: left; vertical-align: top; }
+        .verde { background-color: #c8e6c9; } /* libre */
+        .rojo { background-color: #f8d7da; }   /* lleno */
+    </style>
+</head>
+<body>
+    <h2>Formulario de Asistencia</h2>
+    {% if mensaje %}
+        <div class="mensaje">{{ mensaje }}</div>
+    {% endif %}
+
+    <form method="post">
+        <label>Nombre:</label>
+        <input type="text" name="nombre" required>
+
+        <label>Día:</label>
+        <select name="dia" required>
+            <option value="">--Selecciona un día--</option>
+            {% for d in dias %}
+            <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Lugar:</label>
+        <select name="lugar" required>
+            <option value="">--Selecciona un lugar--</option>
+            {% for l in lugares %}
+            <option value="{{ l }}">{{ l }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    <h3>Disponibilidad por lugar/día</h3>
+    <table>
+        <tr>
+            <th>Lugar / Día</th>
+            {% for d in dias %}
+            <th>{{ d }}</th>
+            {% endfor %}
+        </tr>
+        {% for l in lugares %}
+        <tr>
+            <td>{{ l }}</td>
+            {% for d in dias %}
+                {% set personas = disponibilidad[l][d] %}
+                {% if personas|length >= 3 %}
+                    <td class="rojo">
+                {% else %}
+                    <td class="verde">
+                {% endif %}
+                    {% for p in personas %}
+                        {{ p }}<br>
+                    {% endfor %}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
